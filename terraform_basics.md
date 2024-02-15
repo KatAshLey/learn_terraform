@@ -3,16 +3,24 @@ With AWS Cloud Infrastructure
 
 ---
 
+####Install
+######Mac OS
+Using [Homebrew](brew.sh) in terminal install hashicorp homebrew packages using
+`brew tap hashicorp/tap`
+Then install terraform
+`brew install terraform`
+
+- `terraform -v`
+In cmd prompt to show what version terraform is installed
+
+####Folders/Files
 
 Terraform is a declarative manner, meaning that we are defining with Terraform what the final infrastructure is to look like at the end, not steps to carry out. Eg: a blueprint of final infrastructure. Terraform will figure out what needs to be deployed, remain the same or deleted
 
-- `terraform -v`
-in cmd prompt to show what version terraform is installed
 
 - `main.tf`
 Terraform files end in .tf
 
-*Folders/Files*
 - *.terraform* folder is automatically created when terraform init command is run, containing the configuration files needed
 
 - *terraform.tfstate* file provides what the current status of the latest deployment is. Used to compare differences to new plan/apply. DO NOT CHANGE, WILL BREAK
@@ -46,19 +54,22 @@ provider "aws" {
 ```
 
 - `terraform init`
-downloads necessary plugins depending on the configuration in the .tf file. Run this for first time before plan
+Downloads necessary plugins depending on the configuration in the .tf file. Run this for first time before plan
 
 - `terraform plan`
-strongly recommended to run this before apply, shows the actions that Terraform will take
+Strongly recommended to run this before apply, shows the actions that Terraform will take
 
 - `terraform apply`
-shows changes/actions Terraform will take, confirm running code with 'yes'
+Shows changes/actions Terraform will take, confirm deploying code with 'yes'
+
+- `terraform apply -target <resource_type.resource_name>`
+To restart a single specified resource, confirm deploying resource with 'yes'
 
 - `terraform output`
-gives outputs of current state. If a new output is entered, run terraform refresh
+Gives outputs of current state. If a new output is entered, run terraform refresh
 
 - `terraform refresh`
-refreshes state without applying changes, gives outputs
+Refreshes state without applying changes, gives outputs
 
 - `--auto-approve`
 Adding this to the end of a command that needs approval eg Yes to continue, will remove the approval step
@@ -77,6 +88,10 @@ Shows details of resource named
 - `terraform destroy`
 Deletes all resources using command line. Shows changes that will happen. Enter yes to confirm delete. 
 To remove one resource, you can comment out the code as it is declarative model, then terraform apply it will update with deleting the single resource
+
+- `terraform destroy -target <resource_type.resource_name>`
+Destroys a single specified resource. Name example "aws_instance.web-server-instance"
+
 
 
 
@@ -162,6 +177,33 @@ resource "aws_subnet" "name" {
   }
 }
 ```
+
+
+
+
+
+####Variables
+- creates a variable that can be used. To use variable in code `var.<variable_name>` If default is not predefined, terminal will prompt to define it when terraform apply has been run
+```
+variable "name" {
+  description = 
+  default =
+  type =
+}
+```
+
+- `terraform apply -var "<variable_name>=<value>"`
+Using command line to set the variable and apply at the same time
+
+- Creating a variable list, use `terraform.tfvars` and list the variables used in the following format  variable_name = value. The value can be a list, to refer to it in code `var.variable_name[0]`
+
+-  To use a different variable file name use `terraform apply -var-file <file_name>
+
+- Handling variables as objects in the terraform.tfvars file
+`<variable_name> = [{<resource_parameter> = value, name = value}, {etc}] `
+In code refer to the variable object as `var.<variable_name>[object_name].<resource_parameter>`
+
+
 
 
 
