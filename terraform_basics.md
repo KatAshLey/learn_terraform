@@ -1,17 +1,7 @@
 ##Terraform basics
-With AWS Cloud Infrastructure
 
 ---
 
-####Install
-######Mac OS
-Using [Homebrew](brew.sh) in terminal install hashicorp homebrew packages using
-`brew tap hashicorp/tap`
-Then install terraform
-`brew install terraform`
-
-- `terraform -v`
-In cmd prompt to show what version terraform is installed
 
 ####Folders/Files
 
@@ -21,9 +11,9 @@ Terraform is a declarative manner, meaning that we are defining with Terraform w
 - `main.tf`
 Terraform files end in .tf
 
-- *.terraform* folder is automatically created when terraform init command is run, containing the configuration files needed
+- `.terraform` folder is automatically created when terraform init command is run, containing the configuration files needed
 
-- *terraform.tfstate* file provides what the current status of the latest deployment is. Used to compare differences to new plan/apply. DO NOT CHANGE, WILL BREAK
+- `terraform.tfstate` file provides what the current status of the latest deployment is. Used to compare differences to new plan/apply. DO NOT CHANGE, WILL BREAK
 
 
 
@@ -34,30 +24,23 @@ Terraform files end in .tf
 - `terraform`
 In command line will give you the available commands
 
-- To use the AWS provider with Terraform. Replace my access/secret keys with newly created keys in AWS Management Console
-```
-terraform {
-  required_providers {
-    aws = {
-      source = "hashicorp/aws"
-      version = "5.36.0"
-    }
-  }
-}
+- to enable completion in Bash or Zsh
+`touch ~/.bashrc` or `touch ~/.zshrc`
+`terraform -install-autocomplete`
 
-# Configure the AWS Provider
-provider "aws" {
-    region = "us-east-1"
-    access_key = "my access key"
-    secret_key = "my secret key"
-}
-```
+
 
 - `terraform init`
 Downloads necessary plugins depending on the configuration in the .tf file. Run this for first time before plan
 
+- `terraform fmt` 
+Format your configuration
+
+- `terraform validate`
+Ensures configuration is syntactically valid and internally consistent. If validate is successful but apply is not check regions and ami are the same, default VPC may not be in the correct region
+
 - `terraform plan`
-Strongly recommended to run this before apply, shows the actions that Terraform will take
+Strongly recommended to run this before apply, shows the execution plan that Terraform will take
 
 - `terraform apply`
 Shows changes/actions Terraform will take, confirm deploying code with 'yes'
@@ -82,11 +65,14 @@ To list available commands for state checking
 - `terraform state list`
 Shows a list of resources created that have a state
 
+- `terraform show`
+Inspect the current state from the terraform.tfstate file
+
 - `terraform state show <resource name from list>`
 Shows details of resource named
 
 - `terraform destroy`
-Deletes all resources using command line. Shows changes that will happen. Enter yes to confirm delete. 
+Deletes all resources managed with the current project using command line. Shows changes that will happen. Enter yes to confirm delete. 
 To remove one resource, you can comment out the code as it is declarative model, then terraform apply it will update with deleting the single resource
 
 - `terraform destroy -target <resource_type.resource_name>`
@@ -135,48 +121,6 @@ output "server_public_ip" {
 
 
 
-######EC2
-
-- Creating an EC2 instance. Make sure when entering the ami use one from the AWS launch instance Management console as the number may change over time
-```
-resource "aws_instance" "my-first-server" {
-    ami           = "my ubuntu.id"
-    instance_type = "t3.micro"
-
-    tags = {
-    Name = "HelloWorld"
-    }
-}
-```
-
-
-
-
-
-
-######VPC, subnet
-
-- Creating a VPC. Enter details for  resource name, cidr block, tag value
-```
-resource "aws_vpc" "name" {
-  cidr_block = "10.0.0.0/16"
-  tags = {
-    Name = "value"
-  }
-}
-```
-
-- Creating a subnet. Enter details for subnet name, vpc name, cidr block, tag value
-```
-resource "aws_subnet" "name" {
-  vpc_id     = aws_vpc.vpc_name.id
-  cidr_block = "10.0.1.0/24"
-
-  tags = {
-    Name = "value"
-  }
-}
-```
 
 
 
@@ -208,8 +152,7 @@ In code refer to the variable object as `var.<variable_name>[object_name].<resou
 
 
 
-
+---
 ####References
-- [Terraform Course - Automate your AWS cloud Infrastructure](https://www.youtube.com/watch?v=SLB_c_ayRMo)
 
-- [Terraform providers](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
+- [Terraform Hashicorp tutorials](https://developer.hashicorp.com/terraform/tutorials?product_intent=terraform)
